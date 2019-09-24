@@ -50,20 +50,6 @@ export default class SignUpForm extends Component {
         return phone;
     }
 
-    // validateUsername(username){
-    //     if(username == ''){
-    //         return this.setState({username_valid: false});
-    //     }
-    //     return username;
-    // }
-
-    // validateOrgan(organ) {
-    //     if (organ == '') {
-    //         return this.setState({ organ_valid: false });
-    //     }
-    //     return organ;
-    // }
-
     
    submitSignupCredentials = async () => {
        const { showLoading, email, phone } = this.state;
@@ -73,7 +59,7 @@ export default class SignUpForm extends Component {
          await axios.post(`${url}createUser`, { email, phone });
          await axios.post(`${url}oneTimePassword`, { email, phone });
           console.log('Account Created!');
-          return Actions.login();
+          return this.props.navigation.navigate("signIn");
       } catch (error) {
           console.log(error)
           alert(`signup error: email or phone number already exist! `);
@@ -86,21 +72,21 @@ export default class SignUpForm extends Component {
    }
 
     render() {
-        const { email, phone, username, organ, email_valid, organ_valid, username_valid, phone_valid, showLoading, } = this.state;
+        const { email, phone, email_valid, organ_valid, username_valid, phone_valid, showLoading, } = this.state;
 
         return (
             <KeyboardShift>
             {() => (
                     <View style={styles.container}>
                         <ImageBackground  style={styles.bgImage}>
-                            <View style={styles.loginView}>
-                                <View style={styles.loginTitle}>    
+                            <View style={styles.signUpView}>
+                                <View style={styles.signUpTitle}>    
                                     <Image
                                         style={{  width: 250, height: 150, marginBottom: 150 }}
                                         source={require('../../../assets/logos/serve_logo_transparent.png')}
                                     /> 
                                 </View>
-                                <View style={styles.loginInput}>
+                                <View style={styles.signUpInput}>
                                     <Input
                                         leftIcon={
                                             <Icon
@@ -192,7 +178,7 @@ export default class SignUpForm extends Component {
                                         activeOpacity={0.5}
                                         titleStyle={{ color: 'white', fontSize: 15 }}
                                         containerStyle={{ marginTop: -10 }}
-                                        onPress={() => Actions.login()}
+                                        onPress={() => this.props.navigation.navigate("signIn")}
                                     />
                                 </View>
                             </View>
@@ -220,28 +206,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#000'
     },
-    loginView: {
+    signUpView: {
         marginTop: 30,
         backgroundColor: 'transparent',
         width: 250,
         height: 400,
     },
-    loginTitle: {
+    signUpTitle: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    travelText: {
-        color: 'white',
-        fontSize: 30,
-        fontFamily: 'monospace',
-    },
-    plusText: {
-        color: 'white',
-        fontSize: 30,
-        fontFamily: 'normal',
-    },
-    loginInput: {
+    signUpInput: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

@@ -1,7 +1,6 @@
 import React from "react";
-import { StatusBar, TouchableOpacity, View, StyleSheet } from "react-native";
+import { StatusBar, TouchableOpacity, View, StyleSheet, Dimensions } from "react-native";
 import {
-  Button,
   Text,
   Container,
   Card,
@@ -11,20 +10,23 @@ import {
   Header,
   Title,
   Left,
-  Icon,
   Right,
   Form, 
   Item, 
-  Input,
   Label
 } from "native-base";
 import DatePicker from 'react-native-datepicker'
+import { Input, Button, Icon} from 'react-native-elements';
+import { DrawerActions } from "react-navigation-drawer";
 
-export default class HomeScreen extends React.Component {
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+export default class HomeScreen extends React.Component { 
   constructor(props){
     super(props)
     this.state = {
-      date:"2019-01-01",
+      date:"1999-01-01",
       date_valid: true,
       user: "",
       user_valid: true,
@@ -32,7 +34,13 @@ export default class HomeScreen extends React.Component {
       employer_valid: true,
       bvn: "",
       bvn_valid: true,
+      showLoading: false
     }
+
+    this.validateUser = this.validateUser.bind(this);
+    this.validateBvn = this.validateBvn.bind(this);
+    this.validateEmployer = this.validateEmployer.bind(this);
+    this.validateDate = this.validateDate.bind(this);
   }
 
   validateUser(user){
@@ -62,20 +70,25 @@ export default class HomeScreen extends React.Component {
     }
     return date;
   }
+
+  submitSupplicantCredentials = async () => {
+    const {user, date, bvn, employer, showLoading} = this.state;
+
+}
   render() {
-    const {date_valid, user, user_valid, employer_valid, employer, bvn, bvn_valid} = this.state;
+    const {date_valid, date, user, user_valid, employer_valid, employer, bvn, bvn_valid, showLoading} = this.state;
     return (
       <Container>
         <Header style={{ backgroundColor: "#76D735", marginTop: 20 }} >
           <Left>
-            <Button
+            {/*<Button
               transparent
-            >
+            >*/} 
               <TouchableOpacity
-                 onPress={() => this.props.navigation.navigate("DrawerToggle")}>
-                 <Icon style={{ color: "#FFF"}} name="menu" />
+                 onPress={() => this.props.navigation.dispatch(DrawerActions.openDrawer())}>
+                 <Icon color="#FFF" size={25} type="font-awesome" name="bars" /> 
               </TouchableOpacity>
-            </Button>
+            {/*</Button>*/}
           </Left>
           <Body>
             <Title style={styles.headBody}>Welcome to Serve</Title>
@@ -84,33 +97,27 @@ export default class HomeScreen extends React.Component {
         </Header>
             <Header style={styles.secHeader}>
                 <Left>
-                    <View style={styles.buttonCircle}><Icon style={{marginLeft: 0, color: "#76D735", size: 50}} name="md-paper-plane" /></View>
+                    <View style={styles.buttonCircle}><Icon marginLeft={0} color="#76D735" size={30} type="font-awesome" name="paper-plane" /></View>
                 </Left>
                 <Right style={{marginLeft: -40}}>
                   <Text style={{color: "#FFF", textAlign: "left"}}>Before we offer you Loan, we need a few pieces of information</Text>
                 </Right>  
             </Header>
-        <Content padder>
-        <Form>
-            <Item stackedLabel>
-              <Label>Full Legal Name</Label>
-              <Input 
-                    leftIcon={
-                      <Icon
-                          name="user-0"
-                          style={{color: "#76D735", size: 30}}
-                          size={25}
-                      />
-                  }
+        <Content padder> 
+        <View style={styles.supplicantDet}>
+            {/*<Item stackedLabel>
+              <Label>Full Legal Name</Label>*/}
+              <Input
                   containerStyle={{ marginVertical: 15 }}
                   onChangeText={user => this.setState({ user })}
                   value={user}
-                  inputStyle={{ marginLeft: 10, color: 'white' }}
+                  placeholder="Full Legal Name"
+                  inputStyle={{ marginLeft: 10, color: '#000'}}
                   keyboardAppearance="light"
                   autoFocus={false}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  keyboardType="phone-pad"
+                  keyboardType="ascii-capable"
                   returnKeyType="next"
                   ref={input => (this.userInput = input)}
                   onSubmitEditing={() => {
@@ -122,22 +129,26 @@ export default class HomeScreen extends React.Component {
                   errorMessage={
                     user_valid ? null : "Full Legal Names is required!"
                   }
-              />
-            </Item>
-            <Item stackedLabel>
-              <Label>Bank Verification Number</Label>
-              <Input 
-                  leftIcon={
+
+                  rightIcon={
                     <Icon
-                        name="lock"
-                        style={{color: "#76D735", size: 30}}
+                        name="user"
+                        type="font-awesome"
+                        color="#95989c"
                         size={25}
                     />
                 }
+                  
+              />
+            {/*</Item>
+            <Item stackedLabel>
+              <Label>Bank Verification Number</Label>*/}
+              <Input 
                 containerStyle={{ marginVertical: 15 }}
                 onChangeText={bvn => this.setState({ bvn })}
                 value={bvn}
-                inputStyle={{ marginLeft: 10, color: 'white' }}
+                placeholder="Bank Verification Number"
+                inputStyle={{ marginLeft: 10, color: '#000'}}
                 keyboardAppearance="light"
                 autoFocus={false}
                 autoCapitalize="none"
@@ -147,20 +158,31 @@ export default class HomeScreen extends React.Component {
                 ref={input => (this.bvnInput = input)}
                 onSubmitEditing={() => {
                     this.setState({ bvn_valid: this.validateBvn(bvn) });
-                    this.dateInput.focus();
                 }}
                 blurOnSubmit={false}
                 errorStyle={{ textAlign: 'center', fontSize: 12 }}
                 errorMessage={
                   bvn_valid ? null : "BVN is required!"
                 }
+                rightIcon={
+                  <Icon
+                      name="lock"
+                      type="font-awesome"
+                      color="#95989c"
+                      size={25}
                   />
-            </Item>
-            <Item stackedLabel last>
-              <Label>Date of Birth</Label>
+              }
+                  />
+            {/*</Item>
+            <Item style={{width: 200,  borderBottom: "1px solid #76D735"}} stackedLabel last>
+              <Label>Date of Birth</Label>*/}
+              <View style={styles.dateItems}>
+                <Text style={{color: "#b0b0b0", marginBottom: 4}}>Date of Birth</Text>
               <DatePicker
+                containerStyle={{ marginVertical: 15 }}
                 style={{width: 200}}
-                date={this.state.date}
+                date={date}
+                placeholder="Date of Birth"
                 mode="date"
                 format="YYYY-MM-DD"
                 minDate="1930-01-01"
@@ -172,10 +194,18 @@ export default class HomeScreen extends React.Component {
                     position: 'absolute',
                     left: 0,
                     top: 4,
-                    marginLeft: 0
+                    marginLeft: 0,
+                    height: 0, 
+                    opacity: 0
+                  },
+                  placeholderText: {
+                    fontSize: 12
                   },
                   dateInput: {
-                    marginLeft: 36
+                    marginLeft: 0,
+                    marginVertical: 15,
+                    borderWidth: 0,
+                    borderBottomWidth: 0
                   }
                   // ... You can check the source to find the other keys.
                 }}
@@ -183,28 +213,30 @@ export default class HomeScreen extends React.Component {
                 ref={input => (this.dateInput = input)}
                 onSubmitEditing={() => {
                   this.setState({ date_valid: this.validateDate(date) });
-                  this.employerInput.focus();
                 }}
                 errorStyle={{ textAlign: 'center', fontSize: 12 }}
                   errorMessage={
                     date_valid ? null : "Date of Birth is required!"
                   }
               />
-            </Item>
+              <Icon
+                        name="calendar"
+                        type="font-awesome"
+                        color="#95989c"
+                        size={20}
+                        marginBottom={7}
+                        marginLeft={14}
+               />
+              </View>
+            {/*</Item>
             <Item stackedLabel>
-              <Label>Employer</Label>
-              <Input 
-                    leftIcon={
-                      <Icon
-                          name="home"
-                          style={{color: "#76D735", size: 30}}
-                          size={25}
-                      />
-                  }
+              <Label>Employer</Label>*/}
+              <Input
                   containerStyle={{ marginVertical: 15 }}
                   onChangeText={employer => this.setState({ employer })}
                   value={employer}
-                  inputStyle={{ marginLeft: 10, color: 'white' }}
+                  placeholder="Employer"
+                  inputStyle={{ marginLeft: 10, color: '#000'}}
                   keyboardAppearance="light"
                   autoFocus={false}
                   autoCapitalize="none"
@@ -220,15 +252,48 @@ export default class HomeScreen extends React.Component {
                   errorMessage={
                     employer_valid ? null : "Employer's name is required!"
                   }
+
+                  rightIcon={
+                    <Icon
+                        name="home"
+                        type="font-awesome"
+                        color="#95989c"
+                        size={25}
+                    />
+                }
               />
-            </Item>
+            {/*</Item>*/}
             <View style={styles.footText}>
                 <Text style={{textAlign: "center"}}>By hitting Continue you agree to serve's <Text style={{fontWeight: 'bold'}}>terms of use and loan account aggreement</Text></Text>
             </View>
-            <Button style={{borderColor: "#76D735" }} bordered block> 
+            <Button
+                title="Continue"
+                activeOpacity={1}
+                underlayColor="transparent"
+                onPress={this.submitSupplicantCredentials}
+                loading={showLoading}
+                loadingProps={{ size: 'small', color: '#000' }}
+                disabled={!employer_valid || !user_valid || !date_valid || !bvn_valid}
+                buttonStyle={{
+                    height: 50,
+                    width: 350,
+                    backgroundColor: 'transparent',
+                    borderWidth: 1,
+                    borderRadius: 0,
+                    marginTop: 20,
+                    borderColor: "#76D735" 
+                }}
+                containerStyle={{ marginVertical: 10 }}
+                titleStyle={{ fontWeight: 'normal', color: '#305732' }}
+            />
+            {/*<Button 
+              style={{borderColor: "#76D735" }} 
+              bordered 
+              block
+              disabled={!employer_valid || !user_valid || !date_valid || !bvn_valid}> 
              <Text style={{color: "#305732"}}>continue</Text>
-            </Button>
-        </Form>
+            </Button>*/}
+        </View>
          {/* <Button
             full
             rounded
@@ -247,7 +312,7 @@ export default class HomeScreen extends React.Component {
           >
             <Text>Goto Profiles</Text>
           </Button>*/}
-        </Content> 
+        </Content>
       </Container>
     );
   }
@@ -271,9 +336,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     
   },
+  supplicantDet: {
+    marginTop: 30,
+    backgroundColor: 'transparent',
+    width: 350,
+    height: 500,
+    marginLeft: 10,
+    alignItems: "center"
+  },
   footText: {
-    marginTop: 100,
+    marginTop: 70,
     textAlign: "center",
     fontSize: 12
+  },
+  dateItems: {
+    position: "relative",
+    alignItems: "flex-end",
+    flexDirection: "row",
+    borderBottomWidth: 1
   }
 })

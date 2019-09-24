@@ -32,14 +32,13 @@ export default class App extends Component {
       return <AppLoading />;
     }
     return <HomeScreen />
-    {/*(<Router>
-             <Stack key="root">
-              <Scene key="IntrosSlider" component={IntrosSlider} title="" hideNavBar/> 
-              <Scene key="login" component={SignInForm} title="Login" />
-              <Scene key="register" component={SignUpForm} title="Register" />
-              <Scene key="home" component={HomeScreen} hideNavBar/>
-            </Stack>
-    </Router>);*/}
+    // (<Router>
+    //          <Stack key="root">
+    //           <Scene key="IntrosSlider" component={IntrosSlider} title="" hideNavBar/> 
+    //           <Scene key="login" component={SignInForm} title="Login" />
+    //           <Scene key="register" component={SignUpForm} title="Register" />
+    //         </Stack>
+    //        </Router>)
   
   }
 }

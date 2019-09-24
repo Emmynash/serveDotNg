@@ -68,7 +68,7 @@ export default class IntroSlider extends React.Component {
           color="rgba(255, 255, 255, .9)"
           size={24}
           style={{ backgroundColor: 'transparent' }}
-          onPress={() => Actions.register()}
+          onPress={() => this.props.navigation.navigate("signUp")}
         />
       </View>
     );

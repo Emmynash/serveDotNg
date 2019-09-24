@@ -57,7 +57,7 @@ export default class SignUpForm extends Component {
         try {
             await axios.post(`${url}verifyPassword`, { code, phone })
             console.log('Sigin Successfully!')
-            return Actions.home();
+            return this.props.navigation.navigate("Loan")
             ;
         } catch (error) {
             console.log(error)
@@ -176,7 +176,7 @@ export default class SignUpForm extends Component {
                                         activeOpacity={0.5}
                                         titleStyle={{ color: 'white', fontSize: 15 }}
                                         containerStyle={{ marginTop: -10 }}
-                                        onPress={() => Actions.register()}
+                                        onPress={() => Athis.props.navigation.navigate("signUp")}
                                     />
                                 </View>
                             </View>
